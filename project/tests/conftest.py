@@ -4,6 +4,7 @@ import pytest
 from starlette.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 
+from app.api import summaries
 from app.config import Settings, get_settings
 from app.main import create_application
 
@@ -41,3 +42,11 @@ def test_app_with_db():
 
         # testing
         yield test_client
+
+
+@pytest.fixture(scope="function")
+def patch_generate_summary(monkeypatch):
+    def mock_generate_summary(summary_id, url):
+        return None
+
+    monkeypatch.setattr(summaries, "generate_summary", mock_generate_summary)
